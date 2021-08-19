@@ -34,6 +34,8 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->add('profile', 'Home::cand_profile');
+$routes->add('signup', 'User::index');
+$routes->add('testmail', 'Testmail::index');
 
 $routes->set404Override(function ()
 {

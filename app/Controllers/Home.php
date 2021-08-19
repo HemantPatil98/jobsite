@@ -4,6 +4,10 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
+	public function __construct()
+	{
+		# code...
+	}
 	// INDEX PAGE
 	public function index()
 	{

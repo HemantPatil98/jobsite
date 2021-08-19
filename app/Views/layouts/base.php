@@ -89,7 +89,7 @@
 						<ul class="sign-in tr-list">
 							<li><i class="fa fa-user"></i></li>
 							<li><a href="signin.html">Sign In </a></li>
-							<li><a href="signup.html">Register</a></li>
+							<li><a href="<?=base_url();?>/signup">Register</a></li>
 						</ul>
 						
 					</div>
