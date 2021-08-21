@@ -183,7 +183,7 @@
 								</form>
 								<div class="new-user text-center">
 									<span
-										>Already Registered? <a href="signin.html">Sign in</a>
+										>Already Registered? <a href="<?= base_url().'/signin';?>">Sign in</a>
 									</span>
 								</div>
 							</div>

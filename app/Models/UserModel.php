@@ -57,5 +57,34 @@ class UserModel extends Model{
             return false;
         }
     }
+
+    public function verifyEmail($email)
+    {
+        // echo 'verifying email';
+        $builder = $this->db->table('user');
+        $builder->select("user_id,uniid,status,password");
+        $builder->where('email',$email);
+        $result = $builder->get();
+        print_r($result);
+        if (count($result->getResultArray())==1) {
+            return $result->getRowArray();
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getLoggedInUserData($uniid)
+    {
+        $builder = $this->db->table('user');
+        $builder->where('uniid',$uniid);
+        $result = $builder->get();
+        if (count($result->getResultArray())==1) {
+            return $result->getRow();
+        }
+        else {
+            return false;
+        }
+    }
 }
 ?>

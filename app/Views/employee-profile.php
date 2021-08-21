@@ -18,7 +18,7 @@
 						<img src="<?= base_url();?>/public/assets/images/others/author.png" alt="Image" class="img-fluid" />
 					</div>
 					<div class="user-title">
-						<h1>Jhon Doe</h1>
+						<h1><?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?></h1>
 					</div>
 					<ul class="job-meta tr-list list-inline">
 						<li>
@@ -32,7 +32,7 @@
 								><span
 									class="__cf_email__"
 									data-cfemail="d7bdbfb8b9b3b8b297b0bab6bebbf9b4b8ba"
-									>[email&#160;protected]</span
+									><?= $userdata->email;?></span
 								></a
 							>
 						</li>
@@ -176,6 +176,11 @@
 							
 						</div>
 					</div>
+					
+					
+
+					<?php $validation = \Config\Services::validation(); ?>
+
 					<div class="col-md-8 col-lg-9">
 						<div class="tab-content">
 							<div
@@ -205,15 +210,25 @@
 										
 										<span class=""><h4>Attach Resume</h4></span>
 									</div>
-									<form action="">
+									<form action="<?= site_url('User.php/uploadResume');?>" method="POST" enctype="multipart/form-data">
 										<div class="form-group input-group">
 											<input type="file" class="form-control" name="cand_resume" id="cand_resume" style="padding:12px;">
-											<button class="btn btn-primary" type="button" id="button-addon2">Upload Resume</button>
+											<button class="btn btn-primary" type="submit" id="button-addon2">Upload Resume</button>
 										</div>
 										<div style="text-align:center; color:#9c9c9c">
 											Supported Formats: doc, docx, pdf, upto 2MB
 										</div>
 									</form>
+									<?php if($validation->getError('cand_resume')) {?>
+									<div class='alert alert-danger'>
+										<?= $error = $validation->getError('cand_resume'); ?>
+									</div>
+									<?php }?>
+									<?php if(isset($success)) {?>
+									<div class='alert alert-success'>
+										<?= $success;?>
+									</div>
+									<?php }?>
 								</div>
 								<!-- Resume Upload End -->
 
@@ -229,7 +244,7 @@
 										
 										<span class=""><h4>Video Profile</h4></span>
 									</div>
-									<form action="">
+									<form action="" method="POST" enctype="multipart/form-data">
 										<div class="form-group input-group">
 											<input type="file" accept="audio/*,video/*" class="form-control" name="vid_profile" id="vid_profile" style="padding:12px;">
 											<button class="btn btn-primary" type="button" id="button-addon2">Upload Video Profile</button>
@@ -302,15 +317,19 @@
 											/>
 										</div>
 										<div class="upload-photo">
-											<label class="btn btn-primary" for="upload-photo">
-												<input type="file" id="upload-photo" />
-												Change Photo
-											</label>
-											<span class="max-size">Max 20 MB</span>
+											<form action="<?=base_url();?>" method="POST" enctype="multipart/form-data">
+												<label class="btn btn-primary" for="upload-photo">
+													<input type="file" name="profile_photo" id="upload-photo" />
+													Change Photo
+												</label>
+												<span class="max-size">Max 20 MB</span>
+											</form>
+											
+											
 										</div>
 									</div>
 									<ul class="tr-list account-details">
-										<li>Display Name<span>Jhon Doe</span></li>
+										<li>Display Name<span><?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?></span></li>
 										<li>Address<span>San Francisco, CA, US</span></li>
 										<li>Phone Number<span>+0123456789</span></li>
 										<li>
@@ -319,7 +338,7 @@
 													><span
 														class="__cf_email__"
 														data-cfemail="7a101215141e151f3a1d171b131654191517"
-														>[email&#160;protected]</span
+														><?= $userdata->email;?></span
 													></a
 												></span
 											>
@@ -341,7 +360,7 @@
 												<form action="">
 													<div class="form-group">
 														<label for="cand_name">Name</label>
-														<input type="text" class="form-control" name="cand_name" id="cand_name">
+														<input type="text" class="form-control" name="cand_name" id="cand_name" value="<?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?>">
 													</div>
 													<div class="form-group">
 														<label for="cand_com">Company Name</label>
@@ -365,7 +384,7 @@
 													</div>
 													<div class="form-group">
 														<label for="cand_email">Email Address</label>
-														<input type="text" class="form-control" name="cand_email" id="cand_email">
+														<input type="text" class="form-control" name="cand_email" id="cand_email" value="<?= $userdata->email;?>">
 													</div>
 													
 												</form>
@@ -789,6 +808,7 @@
 					$('#marks').html("<label for='cand_mrkr'>Marks</label><input type='text' class='form-control' name='cand_mrk' id='cand_mrk'>");
 				});
 				$(".select2").select2({
+					tags:true,
 					minimumSelectionLength: 1,
 					maximumSelectionLength: 10
 				});

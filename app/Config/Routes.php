@@ -33,8 +33,10 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
-$routes->add('profile', 'Home::cand_profile');
+$routes->add('profile', 'User::profile');
 $routes->add('signup', 'User::index');
+$routes->add('signin', 'User::signIn');
+$routes->add('signout', 'User::logOut');
 $routes->add('testmail', 'Testmail::index');
 
 $routes->set404Override(function ()

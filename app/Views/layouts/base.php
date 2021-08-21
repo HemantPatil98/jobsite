@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="author" content="Theme Region" />
 		<meta name="description" content="" />
-		<title>Seeker | Job Portal HTML Template</title>
+		<title>Cravita Technologies | Job Portal</title>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="<?= base_url();?>/public/assets/css/bootstrap.min.css" />
@@ -88,8 +88,13 @@
 						
 						<ul class="sign-in tr-list">
 							<li><i class="fa fa-user"></i></li>
-							<li><a href="signin.html">Sign In </a></li>
-							<li><a href="<?=base_url();?>/signup">Register</a></li>
+							<?php if (session()->has("logged_user")):?>
+								<li><a href="<?=base_url();?>/signout">Sign Out</a></li>
+								<li><a href="<?=base_url();?>/profile">My Profile</a></li>
+							<?php else:?>
+								<li><a href="<?=base_url();?>/signin">Sign In </a></li>
+								<li><a href="<?=base_url();?>/signup">Register</a></li>
+							<?php endif;?>
 						</ul>
 						
 					</div>

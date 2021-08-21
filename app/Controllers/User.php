@@ -95,7 +95,7 @@ class User extends Controller
             }
             else {
                 // $data['validation'] = $this->validator;
-                echo view('signup', [
+                return view('signup', [
                 'validation' => $this->validator
             ]);
             }
@@ -173,6 +173,114 @@ class User extends Controller
         {
             return false;
         }
+    }
+
+// User Login
+    public function signIn()
+    {
+        $data =[];
+        if ($this->request->getMethod()=='post') {
+            $rules = [
+                
+                'email'=> [
+                    'rules'=>'required|valid_email',
+                    'label'=> 'Email'
+                ],
+                'pass'=> [
+                    'rules'=>'required|min_length[6]|max_length[16]',
+                    'label'=> 'Password'
+                ]
+            ];
+            if ($this->validate($rules)) {
+                $email = $this->request->getVar('email');
+                $password = $this->request->getVar('pass');
+                $userdata = $this->userModel->verifyEmail($email);
+                if ($userdata) 
+                {
+                    if (password_verify(trim($password), $userdata['password'])) 
+                    {
+                        if ($userdata['status']=='active') {
+                            $this->session->set('logged_user',$userdata['uniid']);
+                            return redirect()->to(base_url().'');
+                        }
+                        else {
+                            $this->session->setTempdata('error','Please actiavate your account before log in');
+                            return redirect()->to(current_url());
+                        }
+                    }
+                    else {
+                        $this->session->setTempdata('error','Sorry! Wrong password entered',3);
+                        return redirect()->to(current_url());
+                    }
+                }
+                else {
+                    $this->session->setTempdata('error','Sorry, Email does not exists',3);
+                    return redirect()->to(current_url());
+                }
+            }
+            else {
+                // $data['validation'] = $this->validator;
+                return view('signin', [
+                'validation' => $this->validator
+            ]);
+            }
+        }
+        return view('signin');
+    }
+
+    public function logOut()
+    {
+        session()->remove('logged_user');
+        session()->destroy();
+        return redirect()->to(base_url()."/signin");
+    }
+
+// User profile
+    public function profile($data=null)
+    {
+        $uniid = session()->get('logged_user');
+        $data['userdata'] = $this->userModel->getLoggedInUserData($uniid);
+        // print_r($userdata);
+        return view('employee-profile',$data);
+    }
+
+// Resume Upload
+    public function uploadResume()
+    {
+        // echo 'Resume';
+        // $data = [];
+        if ($this->request->getMethod()=='post') {
+            // echo 'Resume Post';
+            $rules = [
+                'cand_resume' => [
+                'rules'=>'uploaded[cand_resume]|max_size[cand_resume,2000]|ext_in[cand_resume,pdf,doc,docx]',
+                'label'=>'Resume'
+                ]
+            ];
+            if ($this->validate($rules)) {
+                $file = $this->request->getFile('cand_resume');
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $newName = $file->getRandomName();
+                    if ($file->move(WRITEPATH.'uploads/',$newName)) {
+                        $data['success']='Resume Uploaded Successfully';
+                        // $this->session->setTempdata('success','Resume Uploaded Successfully');
+                        return $this->profile($data);
+                        // echo view('employee-profile');
+                    }
+                    else {
+                        $this->session->setTempdata('error','Sorry!,Resume Not Uploaded Successfully');
+                        echo $file->getErrorString()." ".$file->getError();
+                        return $this->profile();
+                    }
+                }
+            }
+            else {
+                $data['validation'] = $this->validator;
+                return view('employee-profile',$data);
+            }
+        };
+        // return view('employee-profile');
+        
     }
 }
 
