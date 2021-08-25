@@ -9,36 +9,99 @@
 		.ui-datepicker-calendar {
    		 display: none;
     	}
-
+		.social-icon-bg i.fa-instagram {
+			background: linear-gradient(#642b73, #C6426E);
+		}
 	</style>
+	<?php $validation = \Config\Services::validation(); ?>
+	<?php
+	// if (isset($video)) {
+	// 	echo $video;
+	// }
+	// ?>
 		<div class="tr-breadcrumb bg-image section-before">
 			<div class="container">
 				<div class="breadcrumb-info text-center">
 					<div class="user-image">
+						<?php if ($userdata->profile_photo != '') {
+						?>
+						<img src="<?= base_url();?>/public/profilepic/<?= ucfirst($userdata->profile_photo);?>" alt="Image" class="img-fluid" />
+						<?php
+						}
+						else {
+						?>
 						<img src="<?= base_url();?>/public/assets/images/others/author.png" alt="Image" class="img-fluid" />
+						<?php	# code...
+						}
+						?>
+						
 					</div>
 					<div class="user-title">
+						<?php if ($userdata->first_name != '' && $userdata->last_name != '') {
+						?>
 						<h1><?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?></h1>
+						<?php
+						}
+						else {
+						?>
+						<h1>Guest</h1>
+						<?php
+						}
+						?>
+						
 					</div>
 					<ul class="job-meta tr-list list-inline">
 						<li>
-							<i class="fa fa-map-marker" aria-hidden="true"></i>San Francisco,
-							CA, US
+							<i class="fa fa-map-marker" aria-hidden="true"></i>
+							<?php if ($userdata->location) {
+									?>
+									<?= $userdata->location;?>
+									<?php
+									}
+									else {
+									?>
+									Home
+									<?php
+									}
+									?>
 						</li>
-						<li><i class="fa fa-phone" aria-hidden="true"></i>+0123 456 789</li>
+						<li><i class="fa fa-phone" aria-hidden="true"></i>
+						<?php if ($userdata->contact) {
+									?>
+									<?= $userdata->contact;?>
+									<?php
+									}
+									else {
+									?>
+									Home
+									<?php
+									}
+									?>
+						</li>
 						<li>
 							<i class="fa fa-envelope" aria-hidden="true"></i
 							><a href="#"
 								><span
 									class="__cf_email__"
 									data-cfemail="d7bdbfb8b9b3b8b297b0bab6bebbf9b4b8ba"
-									><?= $userdata->email;?></span
+									>
+									<?php if ($userdata->email) {
+									?>
+									<?= $userdata->email;?>
+									<?php
+									}
+									else {
+									?>
+									guest@gmail.com
+									<?php
+									}
+									?>
+									<?= $userdata->email;?>
+									</span
 								></a
 							>
 						</li>
-						<li>
-							<i class="fa fa-briefcase" aria-hidden="true"></i>UI & UX Designer
-						</li>
+						
 					</ul>
 					<div class="progress_bar">
 						<div class="progress">
@@ -51,36 +114,22 @@
 					
 					<ul class="breadcrumb-social social-icon-bg tr-list">
 						<li>
-							<a href="#"
+							<a href="<?=$media[0]['facebook']?>"
 								><i class="fa fa-facebook"></i><span>Facebook</span></a
 							>
 						</li>
 						<li>
-							<a href="#"
-								><i class="fa fa-twitter"></i> <span>Twitter</span>
-							</a>
+							<a href="<?=$media[0]['instagram']?>"
+								><i class="fa fa-instagram" style="font-size: 15px;"></i><span>Instagram</span></a
+							>
 						</li>
+						
 						<li>
-							<a href="#"
-								><i class="fa fa-google-plus"></i> <span>Google Plus</span>
-							</a>
-						</li>
-						<li>
-							<a href="#"
+							<a href="<?=$media[0]['linkedin']?>"
 								><i class="fa fa-linkedin"></i><span>Linkedin</span>
 							</a>
 						</li>
-						<li>
-							<a href="#"
-								><i class="fa fa-dribbble"></i> <span>Dribbble</span></a
-							>
-						</li>
-						<li>
-							<a href="#"><i class="fa fa-behance"></i> <span>Behance</span></a>
-						</li>
-						<li>
-							<a href="#"><i class="fa fa-globe"></i> <span>Website</span> </a>
-						</li>
+						
 					</ul>
 				</div>
 			</div>
@@ -210,15 +259,27 @@
 										
 										<span class=""><h4>Attach Resume</h4></span>
 									</div>
-									<form action="<?= site_url('User.php/uploadResume');?>" method="POST" enctype="multipart/form-data">
+									<form action="<?= site_url('User/uploadResume');?>" method="POST" enctype="multipart/form-data">
 										<div class="form-group input-group">
 											<input type="file" class="form-control" name="cand_resume" id="cand_resume" style="padding:12px;">
 											<button class="btn btn-primary" type="submit" id="button-addon2">Upload Resume</button>
 										</div>
-										<div style="text-align:center; color:#9c9c9c">
+										
+									</form>
+									<div>
+										<span style="font-size: 15px;"><b>Uploaded File:</b></span>
+											<?php if (isset($resume)) {
+											?>
+											<span><?=$resume;?></span><br>
+											<a href="<?= site_url('User/deleteResume');?>">Delete Resume</a>
+											<?php
+											}?>
+									</div><hr>
+									<div style="text-align:center; color:#9c9c9c">
 											Supported Formats: doc, docx, pdf, upto 2MB
 										</div>
-									</form>
+
+								<!-- Validation -->
 									<?php if($validation->getError('cand_resume')) {?>
 									<div class='alert alert-danger'>
 										<?= $error = $validation->getError('cand_resume'); ?>
@@ -229,6 +290,12 @@
 										<?= $success;?>
 									</div>
 									<?php }?>
+									<?php if(isset($error)) {?>
+									<div class='alert alert-danger'>
+										<?= $error;?>
+									</div>
+									<?php }?>
+
 								</div>
 								<!-- Resume Upload End -->
 
@@ -244,15 +311,41 @@
 										
 										<span class=""><h4>Video Profile</h4></span>
 									</div>
-									<form action="" method="POST" enctype="multipart/form-data">
+									<form action="<?= site_url('User/uploadVideo');?>" method="POST" enctype="multipart/form-data">
 										<div class="form-group input-group">
 											<input type="file" accept="audio/*,video/*" class="form-control" name="vid_profile" id="vid_profile" style="padding:12px;">
-											<button class="btn btn-primary" type="button" id="button-addon2">Upload Video Profile</button>
+											<button class="btn btn-primary" type="sumbit" id="button-addon2">Upload Video Profile</button>
 										</div>
-										<div style="text-align:center; color:#9c9c9c">
-											Supported Formats: 
-										</div>
+										
 									</form>	
+									<div>
+										<span style="font-size: 15px;"><b>Uploaded File:</b></span>
+											<?php if(isset($video)) {
+											?>
+											<span><?=$video;?></span><br>
+											<a href="<?= site_url('User/deleteVideo');?>">Delete Video Profile</a>
+											<?php
+											}?>
+									</div><hr>
+									<div style="text-align:center; color:#9c9c9c">
+											Supported Formats: mp4, mkv, mov, upto 25MB
+										</div>
+									<!-- Validation -->
+									<?php if($validation->getError('vid_profile')) {?>
+									<div class='alert alert-danger'>
+										<?= $error = $validation->getError('vid_profile'); ?>
+									</div>
+									<?php }?>
+									<?php if(isset($vsuccess)) {?>
+									<div class='alert alert-success'>
+										<?= $vsuccess;?>
+									</div>
+									<?php }?>
+									<?php if(isset($verror)) {?>
+									<div class='alert alert-danger'>
+										<?= $verror;?>
+									</div>
+									<?php }?>
 								</div>
 								
 								<!-- Video Profile End -->
@@ -266,7 +359,33 @@
 										<span class=""><h4>Resume Headline</h4></span>
 										<span class=""><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#resumeHead"></i></span>
 									</div>
-									<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium eligendi velit doloremque. Ipsam dignissimos libero repudiandae ullam aliquam, ea eum omnis labore dolorum nobis, eaque autem. At nulla sit autem.</p>
+									
+										<?php
+										if (isset($headline)) {
+										?>
+										<p><?=$headline;?></p>
+										<?php
+										}
+										?>
+										<hr>
+										<div class="container validations text-center mt-4" style="width: fit-content;">		
+											<?php if($validation->getError('headline')) {?>
+												<div class='alert alert-danger'>
+													<?= $error = $validation->getError('headline'); ?>
+												</div>
+											<?php }?>
+										</div>
+										<?php if(isset($hsuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $hsuccess;?>
+											</div>
+										<?php }?>
+										<?php if(isset($herror)) {?>
+											<div class='alert alert-danger'>
+												<?= $herror;?>
+											</div>
+										<?php }?>
+									
 								</div>
 								<!-- Resume Heading End-->
 
@@ -279,18 +398,20 @@
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										<form action="" class="tr-form">
+										<form action="<?= site_url('User/uploadHeadLine');?>" class="tr-form" method="POST">
 											<div class="form-group">
 												<label for="headline">Resume Headline</label>
-												<input type="text" class="form-control" name="headline" id="headline">
+												<input type="text" class="form-control" name="headline" value="<?=$headline?>" id="headline">
 											</div>
-											
+											<button type="submit" class="btn btn-primary">Save</button>
 										</form>
+
 									</div>
-									<div class="modal-footer">
+									
+									<!-- <div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button type="button" class="btn btn-primary">Save</button>
-									</div>
+										
+									</div> -->
 									</div>
 								</div>
 								</div>
@@ -309,29 +430,65 @@
 										<span class=""><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candInfo"></i></span>
 									</div>
 									<div class="change-photo">
-										<div class="user-image">
-											<img
-												src="<?= base_url();?>/public/assets/images/others/author.png"
-												alt="Image"
-												class="img-fluid"
-											/>
+										<div class="user-image mb-2">
+											<?php if ($userdata->profile_photo != '') {
+											?>
+											<img src="<?= base_url();?>/public/profilepic/<?= ucfirst($userdata->profile_photo);?>" alt="Image" class="img-fluid" />
+											<?php
+											}
+											else {
+											?>
+											<img src="<?= base_url();?>/public/assets/images/others/author.png" alt="Image" class="img-fluid" />
+											<?php
+											}
+											?>	
 										</div>
-										<div class="upload-photo">
-											<form action="<?=base_url();?>" method="POST" enctype="multipart/form-data">
-												<label class="btn btn-primary" for="upload-photo">
-													<input type="file" name="profile_photo" id="upload-photo" />
-													Change Photo
-												</label>
+										<div class="photo">
+											<form action="<?= site_url('User/profilePhoto');?>" method="POST" enctype="multipart/form-data">
+												<!-- <label class="btn btn-primary" for="upload-photo"> -->
+													<div class="form-group input-group" >
+														<input class="form-control" type="file" name="profile_photo" id="upload-photo" style="padding:12px;"/>
+														<button class="btn btn-primary" type="submit">Change Photo</button>
+													</div>
+													
+													
+												<!-- </label> -->
 												<span class="max-size">Max 20 MB</span>
 											</form>
+											<?php if($validation->getError('profile_photo')) {?>
+												<div class='alert alert-danger'>
+													<?= $error = $validation->getError('profile_photo'); ?>
+												</div>
+											<?php }?>
+											<?php if(isset($psuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $psuccess;?>
+											</div>
 											
+										<?php }?>
+										<?php if(isset($perror)) {?>
+											<div class='alert alert-danger'>
+												<?= $perror;?>
+											</div>
+										<?php }?>
 											
 										</div>
 									</div>
+									<?php if(isset($isuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $isuccess;?>
+											</div>
+											
+										<?php }?>
+										<?php if(isset($ierror)) {?>
+											<div class='alert alert-danger'>
+												<?= $ierror;?>
+											</div>
+										<?php }?>
 									<ul class="tr-list account-details">
 										<li>Display Name<span><?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?></span></li>
-										<li>Address<span>San Francisco, CA, US</span></li>
-										<li>Phone Number<span>+0123456789</span></li>
+										<li>Address<span><?= $userdata->location;?></span></li>
+										<li>Phone Number<span><?= $userdata->contact;?></span></li>
 										<li>
 											Email Id<span
 												><a href="#"
@@ -343,7 +500,7 @@
 												></span
 											>
 										</li>
-										<li>Industry Expertise<span>UI & UX Designer</span></li>
+										
 									</ul>
 								</div>
 								<!-- Personal Info End-->
@@ -357,23 +514,25 @@
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<form action="">
+												<form action="<?=site_url('User/updatePersonalInfo')?>" method="POST">
 													<div class="form-group">
-														<label for="cand_name">Name</label>
-														<input type="text" class="form-control" name="cand_name" id="cand_name" value="<?= ucfirst($userdata->first_name);?> <?= ucfirst($userdata->last_name);?>">
+														<label for="cand_name">First Name</label>
+														<input type="text" class="form-control" name="cand_fname" id="cand_fname" value="<?= ucfirst($userdata->first_name);?>">
 													</div>
+													<?php if($validation->getError('cand_fname')) {?>
+														<div class='alert alert-danger'>
+															<?= $error = $validation->getError('cand_fname'); ?>
+														</div>
+													<?php }?>
 													<div class="form-group">
-														<label for="cand_com">Company Name</label>
-														<input type="text" class="form-control" name="cand_com" id="cand_com">
+														<label for="cand_name">Last Name</label>
+														<input type="text" class="form-control" name="cand_lname" id="cand_lname" value="<?= ucfirst($userdata->last_name);?>">
 													</div>
-													<div class="form-group">
-														<label for="cand_exp">Total Experience</label>
-														<input type="text" class="form-control" name="cand_exp" id="cand_exp">
-													</div>
-													<div class="form-group">
-														<label for="cand_sal">Annual Salary</label>
-														<input type="text" class="form-control" name="cand_sal" id="cand_sal">
-													</div>
+													<?php if($validation->getError('cand_lname')) {?>
+														<div class='alert alert-danger'>
+															<?= $error = $validation->getError('cand_lname'); ?>
+														</div>
+													<?php }?>
 													<div class="form-group">
 														<label for="cand_loc">Current Location</label>
 														<input type="text" class="form-control" name="cand_loc" id="cand_loc">
@@ -386,13 +545,15 @@
 														<label for="cand_email">Email Address</label>
 														<input type="text" class="form-control" name="cand_email" id="cand_email" value="<?= $userdata->email;?>">
 													</div>
-													
+													<?php if($validation->getError('cand_email')) {?>
+														<div class='alert alert-danger'>
+															<?= $error = $validation->getError('cand_email'); ?>
+														</div>
+													<?php }?>
+													<button type="submit" class="btn btn-primary">Save</button>
 												</form>
 											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary">Save</button>
-											</div>
+				
 										</div>
 									</div>
 								</div>
@@ -406,15 +567,51 @@
 											><i class="fa fa-university" aria-hidden="true" style="font-size:35px"></i
 										></span>
 										</div>
-										<span><h4>Education Details</h4></span>
+										<span><h4>Education Details</h4></span><span><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candEdu"></i></span>
 										
 									</div>
+									<?php if(isset($esuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $esuccess;?>
+											</div>
+											
+										<?php }?>
+										<?php if(isset($eerror)) {?>
+											<div class='alert alert-danger'>
+												<?= $eerror;?>
+											</div>
+										<?php }?>
 									<div id="edu1">
-										<h5 style="display:inline;">Course Name</h5> - <h5 style="display:inline;">Specialization</h5><span class=""><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candEdu"></i></span>
-										<p>University/College</p>
-										<p>Educational Year</p>
-									</div><hr>
-									<div> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#candEdu">Add Another</button> </div>
+										<?php if($education[0]['education1']){
+											// print_r($education);
+										?>
+										<h5 style="display:inline;"><?=$education[0]['course1']?></h5> - <h5 style="display:inline;"><?=$education[0]['specialization1']?></h5><span class=""></span>
+										<p><?=$education[0]['university1']?></p>
+										<p><?=$education[0]['passing_yr1']?></p><hr>
+										<?php
+										}
+										?>
+										<?php if($education[0]['education2']){
+											// print_r($education);
+										?>
+										<h5 style="display:inline;"><?=$education[0]['course2']?></h5> - <h5 style="display:inline;"><?=$education[0]['specialization2']?></h5><span class=""></span>
+										<p><?=$education[0]['university2']?></p>
+										<p><?=$education[0]['passing_yr2']?></p><hr>
+										<?php
+										}
+										?>
+
+										<?php if($education[0]['education3']){
+											// print_r($education);
+										?>
+										<h5 style="display:inline;"><?=$education[0]['course3']?></h5> - <h5 style="display:inline;"><?=$education[0]['specialization3']?></h5><span class=""></span>
+										<p><?=$education[0]['university3']?></p>
+										<p><?=$education[0]['passing_yr3']?></p><hr>
+										<?php
+										}
+										?>
+										
+									</div>
 								</div>
 								<!-- Education End-->
 
@@ -427,56 +624,169 @@
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<form action="">
+												<form action="<?=site_url('User/updateEdu')?>" method="POST">
+													<h5>Please start with most recent education</h5><hr>
 													<div class="form-group">
-														<label for="cand_Edu">Education</label>
-														<input type="text" class="form-control" name="cand_Edu" id="cand_Edu">
+														<label for="cand_Edu1">Education</label>
+														<input type="text" class="form-control" name="cand_Edu1" id="cand_Edu1" value="<?=$education[0]['education1']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_course">Course</label>
-														<input type="text" class="form-control" name="cand_course" id="cand_course">
+														<label for="cand_course1">Course</label>
+														<input type="text" class="form-control" name="cand_course1" id="cand_course1" value="<?=$education[0]['course1']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_spl">Specialization</label>
-														<input type="text" class="form-control" name="cand_spl" id="cand_spl">
+														<label for="cand_spl1">Specialization</label>
+														<input type="text" class="form-control" name="cand_spl1" id="cand_spl1" value="<?=$education[0]['specialization1']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_uni">University/Institute</label>
-														<input type="text" class="form-control" name="cand_uni" id="cand_uni">
+														<label for="cand_uni1">University/Institute</label>
+														<input type="text" class="form-control" name="cand_uni1" id="cand_uni1" value="<?=$education[0]['university1']?>">
 													</div>
 													<div class="form-group">
 														<h6>Course Type</h6>
 														<div class="form-check">
-															<input type="radio" class="form-check-input" name="cand_coty" id="cand_coty1" checked>
+															<input type="radio" class="form-check-input" name="cand_coty1" id="full1" value="Full Time" checked>
 															<label for="cand_coty1">Full Time</label>
 														</div>
 														<div class="form-check">
-															<input type="radio" class="form-check-input" name="cand_coty" id="cand_coty2">
+															<input type="radio" class="form-check-input" name="cand_coty1" value="Part Time" id="part1">
 															<label for="cand_coty2">Part Time</label>
 														</div>
 														<div class="form-check">
-															<input type="radio" class="form-check-input" name="cand_coty" id="cand_coty3">
+															<input type="radio" class="form-check-input" name="cand_coty1" id="corres1">
 															<label for="cand_coty3">Correspondence/Distance Learning</label>
 														</div>		
 													</div>
 													<div class="form-group">
-														<label for="cand_passyr">Passing Out Year</label>
-														<input type="text" class="form-control pass-yr" name="cand_passyr" id="cand_passyr">
+														<label for="cand_passyr1">Passing Out Year</label>
+														<input type="text" class="form-control pass-yr" name="cand_passyr1" id="cand_passyr1" value="<?=$education[0]['passing_yr1']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_grade">Grading System</label>
-															<select class="form-select" id="cand_grade">
+														<label for="cand_grade1">Grading System</label>
+															<select class="form-select" name="cand_grade1" id="cand_grade1">
 																<option class="dropdown-item" selected>Choose...</option>
 																<option class="dropdown-item" value="Percentage">Percentage</option>
 																<option class="dropdown-item" value="CGPA">CGPA (scale of 10)</option>
 															</select>
 													</div>
-													<div class="form-group" id="marks"></div>
+													<div class="form-group" id="marks1">
+														<?php
+														if ($education[0]['marks1']) {
+														?>
+														<label for='cand_mrkr1'>Marks</label>
+														<input type='text' class='form-control' name='cand_mrk1' id='cand_mrk1' value="<?=$education[0]['marks1']?>">
+														<?php
+														}
+														?>
+													</div><hr>
+													<div class="form-group">
+														<label for="cand_Edu2">Education</label>
+														<input type="text" class="form-control" name="cand_Edu2" id="cand_Edu2" value="<?=$education[0]['education2']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_course2">Course</label>
+														<input type="text" class="form-control" name="cand_course2" id="cand_course2" value="<?=$education[0]['course2']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_spl2">Specialization</label>
+														<input type="text" class="form-control" name="cand_spl2" id="cand_spl2" value="<?=$education[0]['specialization2']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_uni2">University/Institute</label>
+														<input type="text" class="form-control" name="cand_uni2" id="cand_uni2" value="<?=$education[0]['university2']?>">
+													</div>
+													<div class="form-group">
+														<h6>Course Type</h6>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty2" id="full2" value="Full Time" checked>
+															<label for="cand_coty2">Full Time</label>
+														</div>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty2" value="Part Time" id="part2">
+															<label for="cand_coty2">Part Time</label>
+														</div>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty2" id="corres2">
+															<label for="cand_coty2">Correspondence/Distance Learning</label>
+														</div>		
+													</div>
+													<div class="form-group">
+														<label for="cand_passyr2">Passing Out Year</label>
+														<input type="text" class="form-control pass-yr" name="cand_passyr2" id="cand_passyr2" value="<?=$education[0]['passing_yr2']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_grade2">Grading System</label>
+															<select class="form-select" name="cand_grade2" id="cand_grade2">
+																<option class="dropdown-item" selected>Choose...</option>
+																<option class="dropdown-item" value="Percentage">Percentage</option>
+																<option class="dropdown-item" value="CGPA">CGPA (scale of 10)</option>
+															</select>
+													</div>
+													<div class="form-group" id="marks2">
+														<?php
+														if ($education[0]['marks2']) {
+														?>
+														<label for='cand_mrkr2'>Marks</label>
+														<input type='text' class='form-control' name='cand_mrk2' id='cand_mrk2' value="<?=$education[0]['marks2']?>">
+														<?php
+														}
+														?>
+													</div><hr>
+													<div class="form-group">
+														<label for="cand_Edu3">Education</label>
+														<input type="text" class="form-control" name="cand_Edu3" id="cand_Edu3" value="<?=$education[0]['education3']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_course3">Course</label>
+														<input type="text" class="form-control" name="cand_course3" id="cand_course3" value="<?=$education[0]['course3']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_spl3">Specialization</label>
+														<input type="text" class="form-control" name="cand_spl3" id="cand_spl3" value="<?=$education[0]['specialization3']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_uni3">University/Institute</label>
+														<input type="text" class="form-control" name="cand_uni3" id="cand_uni3" value="<?=$education[0]['university3']?>">
+													</div>
+													<div class="form-group">
+														<h6>Course Type</h6>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty3" id="full1" value="Full Time" checked>
+															<label for="cand_coty3">Full Time</label>
+														</div>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty3" value="Part Time" id="part3">
+															<label for="cand_coty3">Part Time</label>
+														</div>
+														<div class="form-check">
+															<input type="radio" class="form-check-input" name="cand_coty3" id="corres3">
+															<label for="cand_coty3">Correspondence/Distance Learning</label>
+														</div>		
+													</div>
+													<div class="form-group">
+														<label for="cand_passyr3">Passing Out Year</label>
+														<input type="text" class="form-control pass-yr" name="cand_passyr3" id="cand_passyr3" value="<?=$education[0]['passing_yr3']?>">
+													</div>
+													<div class="form-group">
+														<label for="cand_grade3">Grading System</label>
+															<select class="form-select" name="cand_grade3" id="cand_grade3">
+																<option class="dropdown-item" selected>Choose...</option>
+																<option class="dropdown-item" value="Percentage">Percentage</option>
+																<option class="dropdown-item" value="CGPA">CGPA (scale of 10)</option>
+															</select>
+													</div>
+													<div class="form-group" id="marks3">
+														<?php
+														if ($education[0]['marks3']) {
+														?>
+														<label for='cand_mrkr3'>Marks</label>
+														<input type='text' class='form-control' name='cand_mrk3' id='cand_mrk3' value="<?=$education[0]['marks3']?>">
+														<?php
+														}
+														?>
+													</div><hr>
+													<button type="submit" class="btn btn-primary">Save</button>
 												</form>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary">Save</button>
 											</div>
 										</div>
 									</div>
@@ -492,6 +802,11 @@
 										<span><h4>Key Skills</h4></span><span class=""><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candSkills"></i></span>
 										
 									</div>
+									<!-- <?php
+										if (isset($skills)) {
+											print_r($skills);
+										}
+									?> -->
 								    <div name="SkillList">
 										<ul class="tr-list skills">
 											<li style="display:inline; border:1px solid #e8e6e8; border-radius:3px; padding:10px 20px; margin:5px 3px;background-color:#faf7fa;"><span>HTML</span> </li>
@@ -511,27 +826,28 @@
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<form action="">
+												<form action="<?=site_url('User/setSkill')?>" method="POST">
 													<div class="form-group">
 														<label for="cand_skill">Select Skills</label>
 														<!-- <input type="text" class="form-control" name="cand_Edu" id="cand_Edu"> -->
 														<select class="form-control select2" name="cand_skill[]" id="cand_skill" style="width:100%" multiple>
-															<option value="HTML5">HTML5</option>
-															<option value="CSS">CSS</option>
-															<option value="Bootstrap">Bootstrap</option>
-															<option value="Javascript">Javascript</option>
-															<option value="Python">Python</option>
-															<option value="Java">Java</option>
-															<option value="Angular">Angular</option>
+															<?php
+																if (isset($skills)) {
+																	$i = 0;
+																	for ($i=0; $i < count($skills); $i++) {
+																?> 
+																		<option value="<?= $skills[$i]['skill_id']?>"><?= $skills[$i]['skill']?></option>
+																<?php
+																	}
+																}
+															?>
+															
 														</select>
 													</div>
-													
+													<button type="submit" class="btn btn-primary">Save</button>
 												</form>
 											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary">Save</button>
-											</div>
+											
 										</div>
 									</div>
 								</div>
@@ -545,15 +861,31 @@
 											><i class="fa fa-briefcase" aria-hidden="true" style="font-size: 35px;"></i
 										></span>
 										</div>
-										<span><h4>Employment Details (If Any)</h4></span><span><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candEmp"></i></span></span>
+										<span><h4>Recent Employment Details (If Any)</h4></span><span><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candEmp"></i></span></span>
 										
 									</div>
+									<?php if(isset($exsuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $exsuccess;?>
+											</div>
+											
+										<?php }?>
+										<?php if(isset($exerror)) {?>
+											<div class='alert alert-danger'>
+												<?= $exerror;?>
+											</div>
+										<?php }?>
 									<div id="edu1">
-										<h5 style="display:inline;">Designation</h5>
-										<p>Company Name</p>
-										<p>Experience</p>
-									</div><hr>
-									<div> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#candEmp">Add Another</button> </div>
+										<?php if(isset($experience)){
+											// print_r($education);
+										?>
+										<h5 style="display:inline;"><?=$experience[0]['designation']?></h5> 
+										<p><?=$experience[0]['company']?></p>
+										<p><?=$experience[0]['total_experience']?></p><hr>
+										<?php
+										}
+										?>
+									</div>
 								</div>
 								<!-- Employment End-->
 
@@ -566,15 +898,21 @@
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<form action="">
+												<form action="<?=site_url('User/updateExp')?>" method="POST">
 													<div class="form-group">
 														<label for="cand_des">Designation</label>
-														<input type="text" class="form-control" name="cand_des" id="cand_des">
+														<input type="text" class="form-control" name="cand_des" id="cand_des" value="<?=$experience[0]['designation']?>">
 													</div>
+													
 													<div class="form-group">
 														<label for="cand_cname">Company Name</label>
-														<input type="text" class="form-control" name="cand_cname" id="cand_cname">
+														<input type="text" class="form-control" name="cand_cname" id="cand_cname" value="<?=$experience[0]['company']?>">
 													</div>
+													<div class="form-group">
+														<label for="ttl_exp">Total Experience</label>
+														<input type="text" class="form-control" name="ttl_exp" id="ttl_exp" value="<?=$experience[0]['total_experience']?>">
+													</div>
+													
 													<div class="form-group" name="joboption" id="joboption">
 														<h6>Is this your current job?</h6>
 														<div class="form-check" style="display:inline-block; margin:2px 5px;">
@@ -590,11 +928,11 @@
 													</div>
 													<div class="form-group">
 														<label for="cand_jst">Job Start Date</label>
-														<input type="text" class="form-control" name="cand_jst" id="cand_jst">
+														<input type="text" class="form-control" name="cand_jst" id="cand_jst" value="<?=$experience[0]['job_start']?>">
 													</div>
 													<div class="form-group">
 														<label for="cand_jtill">Till</label>
-														<input type="text" class="form-control" name="cand_jtill" id="cand_jtill">
+														<input type="text" class="form-control" name="cand_jtill" id="cand_jtill" value="<?=$experience[0]['job_end']?>">
 													</div>
 													<div class="form-group">
 														<h6>Job Type</h6>
@@ -609,15 +947,15 @@
 													</div>
 													<div class="form-group">
 														<label for="cand_sal">Current Salary Per Year (In INR)</label>
-														<input type="text" class="form-control" name="cand_sal" id="cand_sal">
+														<input type="text" class="form-control" name="cand_sal" id="cand_sal" value="<?=$experience[0]['salary']?>">
 													</div>
 													<div class="form-group">
 														<label for="cand_jrd">Job Role Description</label>
-														<textarea class="form-control" name="cand_jrd" id="cand_jrd" cols="30" rows="6"></textarea>
+														<textarea class="form-control" name="cand_jrd" id="cand_jrd" cols="30" rows="6"><?=$experience[0]['job_description']?></textarea>
 													</div>
 													<div class="form-group">
 														<label for="cand_notice">Notice Period</label>
-															<select class="form-select" id="cand_notice">
+															<select class="form-select" name="cand_notice" id="cand_notice">
 																<option selected>Choose...</option>
 																<option value="15 Days or less">15 Days or less</option>
 																<option value="1 month">1 month</option>
@@ -627,11 +965,8 @@
 																<option value="Serving Notice Period">Serving Notice Period</option>
 															</select>
 													</div>
+													<button type="submit" class="btn btn-primary">Save</button>
 												</form>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary">Save</button>
 											</div>
 										</div>
 									</div>
@@ -648,26 +983,37 @@
 										</div>
 										<span><h4>Social Link</h4></span><span class=""><i type="button" class="fa fa-pencil-square-o" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#candSocial"></i></span>
 									</div>
+									<?php if(isset($msuccess)) {?>
+											<div class='alert alert-success'>
+												<?= $exsuccess;?>
+											</div>
+											
+										<?php }?>
+										<?php if(isset($merror)) {?>
+											<div class='alert alert-danger'>
+												<?= $exerror;?>
+											</div>
+										<?php }?>
 									<ul class="social social-icon-bg tr-list">
 										<li>
 											<i class="fa fa-facebook"></i
 											><span class="media-body"
-												><a href="#">https://www.facebook.com/jhondoe</a></span
+												><a href="<?=$media[0]['facebook']?>"><?=$media[0]['facebook']?></a></span
 											>
 										</li>
 										
 										<li>
-											<i class="fa fa-google-plus"></i
+											<i class="fa fa-instagram"></i
 											><span class="media-body"
-												><a href="#"
-													>https://www.googleplus.com/jhondoe</a
+												><a href="<?=$media[0]['instagram']?>"
+													><?=$media[0]['instagram']?></a
 												></span
 											>
 										</li>
 										<li>
 											<i class="fa fa-linkedin"></i
 											><span class="media-body"
-												><a href="#">https://www.linkedin.com/jhondoe</a></span
+												><a href="<?=$media[0]['linkedin']?>"><?=$media[0]['linkedin']?></a></span
 											>
 										</li>
 										
@@ -684,73 +1030,23 @@
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												<form action="">
-													<div class="form-group input-group mb-3">
-														<span class="input-group-text" id="basic-addon1"><i class="fab fa-facebook-square"></i></span>
-														<input type="text" class="form-control" name="cand_face" id="cand_face">
+												<form action="<?=site_url('User/updateMedia')?>" method="POST">
+													<div class="form-group">
+														<label for="cand_face"><i class="fa fa-facebook-square" style="font-size: 45px;"></i></label>
+														<input type="text" class="form-control" name="cand_face" id="cand_face" value="<?=$media[0]['facebook']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_cname">Company Name</label>
-														<input type="text" class="form-control" name="cand_cname" id="cand_cname">
-													</div>
-													<div class="form-group" name="joboption" id="joboption">
-														<h6>Is this your current job?</h6>
-														<div class="form-check" style="display:inline-block; margin:2px 5px;">
-															<input type="radio" class="form-check-input" name="job_current" id="job_yes1" value="yes" checked>
-															<label for="job_yes1">Yes</label><br>
-															
-														</div>
-														<div class="form-check" style="display:inline-block;">
-															<input type="radio" class="form-check-input" name="job_current" value="no" id="job_no1">
-															<label for="job_no1">No</label>
-														</div>
-														
+														<label for="cand_face"><i class="fa fa-instagram" style="font-size: 45px;"></i></label>
+														<input type="text" class="form-control" name="cand_insta" id="cand_insta" value="<?=$media[0]['instagram']?>">
 													</div>
 													<div class="form-group">
-														<label for="cand_jst">Job Start Date</label>
-														<input type="text" class="form-control" name="cand_jst" id="cand_jst">
+														<label for="cand_lndin"><i class="fa fa-linkedin-square" style="font-size: 45px;"></i></label>
+														<input type="text" class="form-control" name="cand_lndin" id="cand_lndin" value="<?=$media[0]['linkedin']?>">
 													</div>
-													<div class="form-group">
-														<label for="cand_jtill">Till</label>
-														<input type="text" class="form-control" name="cand_jtill" id="cand_jtill">
-													</div>
-													<div class="form-group">
-														<h6>Job Type</h6>
-														<div class="form-check">
-															<input type="radio" class="form-check-input" name="cand_jty" id="cand_jty1" checked>
-															<label for="cand_loc">Full Time</label>
-														</div>
-														<div class="form-check">
-															<input type="radio" class="form-check-input" name="cand_jty" id="cand_coty2">
-															<label for="cand_loc">Part Time</label>
-														</div>		
-													</div>
-													<div class="form-group">
-														<label for="cand_sal">Current Salary Per Year (In INR)</label>
-														<input type="text" class="form-control" name="cand_sal" id="cand_sal">
-													</div>
-													<div class="form-group">
-														<label for="cand_jrd">Job Role Description</label>
-														<textarea class="form-control" name="cand_jrd" id="cand_jrd" cols="30" rows="6"></textarea>
-													</div>
-													<div class="form-group">
-														<label for="cand_notice">Notice Period</label>
-															<select class="form-select" id="cand_notice">
-																<option selected>Choose...</option>
-																<option value="15 Days or less">15 Days or less</option>
-																<option value="1 month">1 month</option>
-																<option value="2 month">2 month</option>
-																<option value="3 month">3 month</option>
-																<option value="More than 3 Months">More than 3 Months</option>
-																<option value="Serving Notice Period">Serving Notice Period</option>
-															</select>
-													</div>
+													<button type="submit" class="btn btn-primary">Save</button>
 												</form>
 											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary">Save</button>
-											</div>
+											
 										</div>
 									</div>
 								</div>
@@ -793,6 +1089,7 @@
 					selected_value = $("input[name='job_current']:checked").val();
 					console.log(selected_value);
 					if (selected_value=='no') {
+						$('#cand_jtill').val('')
 						$('#cand_jtill').datepicker({
 						startView:"months",
 						minViewMode: "months",
@@ -800,12 +1097,32 @@
                      	format: 'mm-yyyy'
        				});
 					}
+					else{
+						// $(document).ready( function() {
+							var now = new Date();
+							var day = ("0" + now.getDate()).slice(-2);
+							var month = ("0" + (now.getMonth() + 1)).slice(-2);
+							var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+							$('#cand_jtill').val('')
+							$('#cand_jtill').val(today);	
+			
+					}
 					
 				});
 
-				$('#cand_grade').on('change', function() {
+				// $('#job_yes1').omchange
+
+				$('#cand_grade1').on('change', function() {
 					console.log('changed');
-					$('#marks').html("<label for='cand_mrkr'>Marks</label><input type='text' class='form-control' name='cand_mrk' id='cand_mrk'>");
+					$('#marks1').html("<label for='cand_mrkr1'>Marks</label><input type='text' class='form-control' name='cand_mrk1' id='cand_mrk1'>");
+				});
+				$('#cand_grade2').on('change', function() {
+					console.log('changed');
+					$('#marks2').html("<label for='cand_mrkr2'>Marks</label><input type='text' class='form-control' name='cand_mrk2' id='cand_mrk2'>");
+				});
+				$('#cand_grade3').on('change', function() {
+					console.log('changed');
+					$('#marks3').html("<label for='cand_mrkr3'>Marks</label><input type='text' class='form-control' name='cand_mrk3' id='cand_mrk3'>");
 				});
 				$(".select2").select2({
 					tags:true,

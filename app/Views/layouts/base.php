@@ -80,7 +80,7 @@
 							<li><a href="<?=base_url();?>/home/index">Home</a></li>
 							<!-- <li><a href="job-post.html">Post A Job</a></li> -->
 							<li><a href="<?=site_url('Home/job_list');?>">Job List</a></li>
-							<li><a href="job-details.html">Job Details</a></li>
+							<li><a href="job-details.html">About Us</a></li>
 							
 						</ul>
 					</div>

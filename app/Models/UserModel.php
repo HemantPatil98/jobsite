@@ -86,5 +86,39 @@ class UserModel extends Model{
             return false;
         }
     }
+
+    public function profilePhoto($user_id,$profilepic)
+    {
+        $builder = $this->db->table('user');
+        $builder->where('user_id',$user_id);
+        $builder->update(['profile_photo'=>$profilepic]);
+        if ($this->db->affectedRows()>0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function updatePersonalInfo($user_id,$userdata)
+    {
+        $builder = $this->db->table('user');
+        $builder->where('user_id',$user_id);
+        $builder->update($userdata);
+        if ($this->db->affectedRows()>0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getSkills()
+    {
+        $builder = $this->db->table('key_skill');
+        // $builder->select('skill');
+        $result=$builder->get();
+        return $result->getResultArray();
+    }
 }
 ?>
